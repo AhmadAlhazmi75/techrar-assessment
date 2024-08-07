@@ -131,7 +131,7 @@ Comprehensive ticketing system with AI-powered solutions.
 ### CrewAI Question Answering
 
 #### Ask a Question
-- **Endpoint**: `POST /ask`
+- **Endpoint**: `POST /crewai/ask`
 - **Request**:
   ```json
   {
@@ -149,7 +149,7 @@ Comprehensive ticketing system with AI-powered solutions.
 ### Ticketing System
 
 #### Create Ticket
-- **Endpoint**: `POST /tickets`
+- **Endpoint**: `POST /tickets/tickets`
 - **Headers**: `Authorization: Bearer your_auth_token_here`
 - **Request**:
   ```json
@@ -174,7 +174,7 @@ Comprehensive ticketing system with AI-powered solutions.
   ```
 
 #### Get Ticket
-- **Endpoint**: `GET /tickets/{ticket_id}`
+- **Endpoint**: `GET /tickets/tickets/{ticket_id}`
 - **Response**:
   ```json
   {
@@ -196,7 +196,7 @@ Comprehensive ticketing system with AI-powered solutions.
   ```
 
 #### Generate AI Solution
-- **Endpoint**: `POST /tickets/{ticket_id}/ai-solution`
+- **Endpoint**: `POST /tickets/tickets/{ticket_id}/ai-solution`
 - **Query Parameters**: `system=system1`
 - **Response**:
   ```json
@@ -211,7 +211,7 @@ Comprehensive ticketing system with AI-powered solutions.
   ```
 
 #### Like/Dislike AI Solution
-- **Endpoint**: `POST /ai-solutions/{solution_id}/like` or `/ai-solutions/{solution_id}/dislike`
+- **Endpoint**: `POST /tickets/ai-solutions/{solution_id}/like` or `/ai-solutions/{solution_id}/dislike`
 - **Headers**: `Authorization: Bearer your_auth_token_here` (Admin only)
 - **Response**:
   ```json
