@@ -1,5 +1,5 @@
 from ninja import Schema
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -19,19 +19,6 @@ class AISolutionOut(BaseModel):
     class Config:
         from_attributes = True
 
-from pydantic import BaseModel
-from datetime import datetime
-from typing import Optional
-
-class AISolutionOut(BaseModel):
-    id: int
-    solution: str
-    created_at: datetime
-    likes: int
-    dislikes: int
-
-    class Config:
-        from_attributes = True
 
 class TicketOut(BaseModel):
     id: int
@@ -60,6 +47,6 @@ class TicketOut(BaseModel):
             assigned_to=ticket.assigned_to.id if ticket.assigned_to else None,
             ai_solution=AISolutionOut.from_orm(ticket.ai_solution) if hasattr(ticket, 'ai_solution') else None
         )
-        
+
 class AISolutionIn(Schema):
     ticket_id: int
