@@ -3,10 +3,10 @@ import { AnimationProps, motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
-
+import { LearnMoreButton } from "./LearnMoreButton";
 export const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-zinc-950 -z-1">
+    <section className="relative overflow-hidden bg-zinc-950 -z-1 min-h-screen">
       <Content />
       <Beams />
       <GradientGrid />
@@ -91,11 +91,7 @@ const Content = () => {
             </Link>
           <FiArrowRight />
         </SplashButton>
-        <GhostButton className="rounded-md px-4 py-2 text-zinc-100">
-            <Link href="/learn-more">
-          Learn more
-            </Link>
-        </GhostButton>
+        <LearnMoreButton />
       </motion.div>
     </div>
   );
@@ -116,19 +112,6 @@ const SplashButton = ({ children, className, ...rest }: ButtonProps) => {
   );
 };
 
-const GhostButton = ({ children, className, ...rest }: ButtonProps) => {
-  return (
-    <button
-      className={twMerge(
-        "rounded-md px-4 py-2 text-zinc-100 transition-all hover:scale-[1.02] hover:bg-zinc-800 hover:text-zinc-50 active:scale-[0.98]",
-        className
-      )}
-      {...rest}
-    >
-      {children}
-    </button>
-  );
-};
 
 const Beams = () => {
   const { width } = useWindowSize();

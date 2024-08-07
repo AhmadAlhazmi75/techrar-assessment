@@ -9,6 +9,7 @@ export const setAuthToken = (token: string) => {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };
 
+
 export const clearAuthToken = () => {
   delete api.defaults.headers.common['Authorization'];
 };

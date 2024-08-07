@@ -9,8 +9,8 @@ import Link from "next/link";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Chat App",
-  description: "A Next.js AI chat application",
+  title: "Techrar Technical Assessment",
+  description: "Techrar Technical Assessment",
 };
 
 export default function RootLayout({

@@ -3,7 +3,6 @@
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { motion } from "framer-motion";
-import { Heading } from '@/components/Heading';
 import { CornerGrid } from '@/components/CornerGrid';
 
 const Profile = () => {

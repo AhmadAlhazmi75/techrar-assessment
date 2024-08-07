@@ -6,10 +6,6 @@ import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { TicketWithSolution } from '@/types/types';
 
-
-
-
-
 export default function AllTickets() {
   const [tickets, setTickets] = useState<TicketWithSolution[]>([]);
   const [isLoading, setIsLoading] = useState(true);
