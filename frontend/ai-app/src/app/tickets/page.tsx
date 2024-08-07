@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { createTicket, generateAISolution } from '../../utils/api';
 import toast from 'react-hot-toast';
 import { Ticket, AISolution } from '@/types/types';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
   const SYSTEMS = [
     { value: 'system1', name: 'Do the work book' },
@@ -45,6 +46,7 @@ const Tickets: React.FC = () => {
 
 
   return (
+    <ProtectedRoute>
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -156,6 +158,7 @@ const Tickets: React.FC = () => {
         </motion.div>
       )}
     </motion.div>
+    </ProtectedRoute>
   );
 };
 

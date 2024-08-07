@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import api from '@/utils/api';
-import { TicketWithSolution } from '@/types/types';
 
+import { TicketWithSolution } from '@/types/types';
+import { likeAISolution, dislikeAISolution, getAllTickets } from '@/utils/api';
 export default function AllTickets() {
   const [tickets, setTickets] = useState<TicketWithSolution[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,9 +17,9 @@ export default function AllTickets() {
   const fetchTickets = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get('/tickets/tickets');
-      console.log('Fetched tickets:', response.data);
-      setTickets(response.data);
+      const fetchedTickets = await getAllTickets();
+      console.log('Fetched tickets:', fetchedTickets);
+      setTickets(fetchedTickets);
     } catch (error) {
       console.error('Error fetching tickets:', error);
       toast.error('Failed to fetch tickets. Please try again.');
@@ -30,8 +30,22 @@ export default function AllTickets() {
 
   const handleLikeToggle = async (solutionId: number) => {
     try {
-      await api.post(`/tickets/ai-solutions/${solutionId}/like`);
-      fetchTickets(); // Refresh tickets after liking
+      const response = await likeAISolution(solutionId);
+      setTickets(prevTickets =>
+        prevTickets.map(ticket => {
+          if (ticket.ai_solution && ticket.ai_solution.id === solutionId) {
+            return {
+              ...ticket,
+              ai_solution: {
+                ...ticket.ai_solution,
+                likes: response.likes,
+                dislikes: response.dislikes
+              }
+            };
+          }
+          return ticket;
+        })
+      );
     } catch (error) {
       console.error('Error toggling like:', error);
       toast.error('Failed to update like. Please try again.');
@@ -40,14 +54,27 @@ export default function AllTickets() {
 
   const handleDislikeToggle = async (solutionId: number) => {
     try {
-      await api.post(`/tickets/ai-solutions/${solutionId}/dislike`);
-      fetchTickets();
+      const response = await dislikeAISolution(solutionId);
+      setTickets(prevTickets =>
+        prevTickets.map(ticket => {
+          if (ticket.ai_solution && ticket.ai_solution.id === solutionId) {
+            return {
+              ...ticket,
+              ai_solution: {
+                ...ticket.ai_solution,
+                likes: response.likes,
+                dislikes: response.dislikes
+              }
+            };
+          }
+          return ticket;
+        })
+      );
     } catch (error) {
       console.error('Error toggling dislike:', error);
       toast.error('Failed to update dislike. Please try again.');
     }
   };
-
   if (isLoading) {
     return <div className="text-center mt-8">Loading tickets...</div>;
   }
