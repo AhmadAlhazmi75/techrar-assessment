@@ -235,8 +235,8 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python manage.py migrate
 # Rename .env.example to .env and fill in required keys
+python manage.py migrate
 python manage.py runserver
 ```
 
