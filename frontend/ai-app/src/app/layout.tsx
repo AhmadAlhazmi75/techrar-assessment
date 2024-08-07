@@ -33,7 +33,7 @@ export default function RootLayout({
           </Navbar>
           <Link href="/tickets">
           <div className="fixed bottom-4 right-4 z-50">
-            <div className="bg-violet-600 rounded-full p-6 shadow-lg hover:bg-violet-700 transition-colors duration-300 cursor-pointer">
+            <div className="bg-violet-600 rounded-full p-6 shadow-lg hover:bg-violet-700 transition-all hover:scale-125 duration-300 cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
               </svg>

@@ -1,116 +1,120 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { getAllTickets, likeAISolution, dislikeAISolution } from '@/utils/api';
-import { Ticket, AISolution } from '@/app/tickets/page';
-import ProtectedRoute from '@/components/ProtectedRoute';
-interface TicketWithSolutions extends Ticket {
-  ai_solutions: AISolution[];
+import { toast } from 'react-hot-toast';
+import api from '@/utils/api';
+
+interface AISolution {
+    id: number;
+    solution: string;
+    created_at: string;
+    likes: number;
+    dislikes: number;
+  }
+
+interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+  priority: string;
+  status: string;
+  assigned_to: number | null;
 }
 
+interface TicketWithSolution extends Ticket {
+    ai_solution?: AISolution;
+  }
+
 export default function AllTickets() {
-  const [tickets, setTickets] = useState<TicketWithSolutions[]>([]);
+  const [tickets, setTickets] = useState<TicketWithSolution[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTickets = async () => {
-      try {
-        const fetchedTickets = await getAllTickets();
-        setTickets(fetchedTickets);
-      } catch (error) {
-        console.error('Failed to fetch tickets:', error);
-      }
-    };
-
     fetchTickets();
-
   }, []);
+
+  const fetchTickets = async () => {
+    setIsLoading(true);
+    try {
+      const response = await api.get('/tickets/tickets');
+      console.log('Fetched tickets:', response.data);
+      setTickets(response.data);
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      toast.error('Failed to fetch tickets. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLikeToggle = async (solutionId: number) => {
     try {
-      const response = await likeAISolution(solutionId);
-      const updatedTickets = tickets.map(ticket => ({
-        ...ticket,
-        ai_solutions: ticket.ai_solutions.map(solution =>
-          solution.id === solutionId ? { ...solution, likes: response.likes, dislikes: response.dislikes } : solution
-        )
-      }));
-      setTickets(updatedTickets);
+      await api.post(`/tickets/ai-solutions/${solutionId}/like`);
+      fetchTickets(); // Refresh tickets after liking
     } catch (error) {
-      console.error('Failed to toggle like for solution:', error);
+      console.error('Error toggling like:', error);
+      toast.error('Failed to update like. Please try again.');
     }
   };
 
   const handleDislikeToggle = async (solutionId: number) => {
     try {
-      const response = await dislikeAISolution(solutionId);
-      const updatedTickets = tickets.map(ticket => ({
-        ...ticket,
-        ai_solutions: ticket.ai_solutions.map(solution =>
-          solution.id === solutionId ? { ...solution, likes: response.likes, dislikes: response.dislikes } : solution
-        )
-      }));
-      setTickets(updatedTickets);
+      await api.post(`/tickets/ai-solutions/${solutionId}/dislike`);
+      fetchTickets();
     } catch (error) {
-      console.error('Failed to toggle dislike for solution:', error);
+      console.error('Error toggling dislike:', error);
+      toast.error('Failed to update dislike. Please try again.');
     }
   };
 
+  if (isLoading) {
+    return <div className="text-center mt-8">Loading tickets...</div>;
+  }
+
   return (
-    <ProtectedRoute forAdmin={true}>
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="container mx-auto p-4 bg-zinc-950 text-zinc-200 min-h-screen mt-36"
-    >
-      <motion.h1
-        initial={{ y: -20 }}
-        animate={{ y: 0 }}
-        className="text-3xl font-bold mb-8 text-center"
-      >
-        All Tickets
-      </motion.h1>
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-4"
-      >
-        {tickets.map((ticket) => (
-          <motion.div
-            key={ticket.id}
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="bg-zinc-900 p-4 rounded-lg shadow-lg"
+    <div className="container mx-auto px-4 py-8 mt-32">
+      <h1 className="text-3xl font-bold mb-6">All Tickets</h1>
+      {tickets.map((ticket: TicketWithSolution) => (
+  <motion.div
+    key={ticket.id}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+    className="bg-zinc-800 p-6 rounded-lg shadow-lg mb-6"
+  >
+    <h2 className="text-2xl font-bold mb-2">{ticket.title}</h2>
+    <p className="text-zinc-300 mb-4">{ticket.description}</p>
+    <div className="flex justify-between items-center mb-4">
+      <span className="text-zinc-400">Priority: {ticket.priority}</span>
+      <span className="text-zinc-400">Status: {ticket.status}</span>
+    </div>
+    {ticket.ai_solution ? (
+      <div className="mt-4 bg-zinc-700 p-4 rounded">
+        <h3 className="text-xl font-semibold mb-2">AI Solution</h3>
+        <p className="text-zinc-300 mb-2">{ticket.ai_solution.solution}</p>
+        <div className="flex justify-end space-x-2">
+          <button
+            onClick={() => handleLikeToggle(ticket.ai_solution!.id)}
+            className={`px-2 py-1 ${ticket.ai_solution.likes > 0 ? 'bg-green-700' : 'bg-green-600'} text-white rounded hover:bg-green-700 transition duration-300`}
           >
-            <h2 className="text-xl font-semibold mb-2">{ticket.title}</h2>
-            <p className="text-zinc-400 mb-2">{ticket.description}</p>
-            <p className="text-sm text-zinc-500 mb-4">Priority: {ticket.priority}</p>
-            {ticket.ai_solutions?.map((solution) => (
-              <div key={solution.id} className="mt-4 bg-zinc-800 p-3 rounded">
-                <p className="text-zinc-300 mb-2">{solution.solution}</p>
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => handleLikeToggle(solution.id)}
-                    className={`px-2 py-1 ${solution.likes > 0 ? 'bg-green-700' : 'bg-green-600'} text-white rounded hover:bg-green-700 transition duration-300`}
-                  >
-                    {solution.likes > 0 ? 'Unlike' : 'Like'} ({solution.likes})
-                  </button>
-                  <button
-                    onClick={() => handleDislikeToggle(solution.id)}
-                    className={`px-2 py-1 ${solution.dislikes > 0 ? 'bg-red-700' : 'bg-red-600'} text-white rounded hover:bg-red-700 transition duration-300`}
-                  >
-                    {solution.dislikes > 0 ? 'Undislike' : 'Dislike'} ({solution.dislikes})
-                  </button>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-        ))}
-      </motion.div>
-    </motion.div>
-    </ProtectedRoute>
+            {ticket.ai_solution.likes > 0 ? 'Unlike' : 'Like'} ({ticket.ai_solution.likes})
+          </button>
+          <button
+            onClick={() => handleDislikeToggle(ticket.ai_solution!.id)}
+            className={`px-2 py-1 ${ticket.ai_solution.dislikes > 0 ? 'bg-red-700' : 'bg-red-600'} text-white rounded hover:bg-red-700 transition duration-300`}
+          >
+            {ticket.ai_solution.dislikes > 0 ? 'Undislike' : 'Dislike'} ({ticket.ai_solution.dislikes})
+          </button>
+        </div>
+      </div>
+    ) : (
+      <p className="text-zinc-400 mt-2">No AI solution available for this ticket.</p>
+    )}
+  </motion.div>
+))}
+    </div>
   );
 }

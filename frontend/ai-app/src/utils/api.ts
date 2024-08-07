@@ -40,26 +40,25 @@ export const sendChatMessage = async (system: string, prompt: string) => {
     return response.data;
   };
 
-
-export const createTicket = async (title: string, description: string, priority: string) => {
-  try {
-    const currentUser = await getMe();
-    console.log(currentUser);
-    const response = await api.post('/tickets/tickets', {
-      title,
-      description,
-      priority,
-
-    });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      console.error('Error creating ticket:', error.response.data);
-      throw new Error('Failed to create ticket. Please make sure you are logged in and try again.');
+  export const createTicket = async (title: string, description: string, priority: string) => {
+    try {
+      const response = await api.post('/tickets/tickets', {
+        title,
+        description,
+        priority,
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error('Error creating ticket:', error.response.data);
+        if (error.response.status === 401) {
+          throw new Error('You must be logged in to create a ticket.');
+        }
+        throw new Error(error.response.data.detail || 'Failed to create ticket. Please try again.');
+      }
+      throw new Error('An unexpected error occurred. Please try again.');
     }
-    throw error;
-  }
-};
+  };
 
 export const getTicket = async (ticketId: number) => {
     const response = await api.get(`/tickets/tickets/${ticketId}`);
@@ -71,9 +70,17 @@ export const getAllTickets = async () => {
     return response.data;
   };
 
-export const generateAISolution = async (ticketId: number, system: string) => {
-    const response = await api.post(`/tickets/tickets/${ticketId}/ai-solution`, { system });
-    return response.data;
+  export const generateAISolution = async (ticketId: number, system: string) => {
+    try {
+      const response = await api.post(`/tickets/tickets/${ticketId}/ai-solution`, { system });
+      return response.data;
+    } catch (error) {
+      console.error('Error generating AI solution:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.detail || 'Failed to generate AI solution. Please try again.');
+      }
+      throw new Error('An unexpected error occurred. Please try again.');
+    }
   };
 
 

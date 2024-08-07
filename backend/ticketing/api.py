@@ -10,14 +10,15 @@ from authentication.auth import AuthBearer
 router = Router()
 auth = AuthBearer()
 
-@router.post("/tickets", response=TicketOut)
+@router.post("/tickets", response=TicketOut, auth=auth)
 def create_ticket(request, ticket_in: TicketIn):
     ticket = Ticket.objects.create(
         title=ticket_in.title,
         description=ticket_in.description,
         priority=ticket_in.priority,
+        assigned_to=request.auth
     )
-    return ticket
+    return TicketOut.from_orm(ticket)
 
 @router.get("/tickets/{ticket_id}", response=TicketOut)
 def get_ticket(request, ticket_id: int):
@@ -30,38 +31,16 @@ def generate_ai_solution(request, ticket_id: int, system: str = "system1"):
     prompt = f"Provide a solution for the following ticket: {ticket.description}"
 
     if system not in SYSTEM_PDF_MAP:
-        return {"error": f"Invalid system. Available systems: {', '.join(SYSTEM_PDF_MAP.keys())}"}
+        raise HttpError(400, f"Invalid system. Available systems: {', '.join(SYSTEM_PDF_MAP.keys())}")
 
     ai_solution = process_prompt(system, prompt)
     solution = AISolution.objects.create(ticket=ticket, solution=ai_solution)
-    return solution
+    return AISolutionOut.from_orm(solution)
 
 @router.get("/tickets", response=List[TicketOut])
 def get_all_tickets(request):
-    tickets = Ticket.objects.all()
-    return [
-        TicketOut(
-            id=ticket.id,
-            title=ticket.title,
-            description=ticket.description,
-            created_at=ticket.created_at,
-            updated_at=ticket.updated_at,
-            priority=ticket.priority,
-            status=ticket.status,
-            ai_solutions=[
-                AISolutionOut(
-                    id=solution.id,
-                    ticket_id=ticket.id,
-                    solution=solution.solution,
-                    created_at=solution.created_at,
-                    likes=solution.likes,
-                    dislikes=solution.dislikes
-                )
-                for solution in AISolution.objects.filter(ticket=ticket)
-            ]
-        )
-        for ticket in tickets
-    ]
+    tickets = Ticket.objects.all().select_related('ai_solution')
+    return [TicketOut.from_orm(ticket) for ticket in tickets]
 
 @router.post("/ai-solutions/{solution_id}/like", auth=auth)
 def like_ai_solution(request, solution_id: int):

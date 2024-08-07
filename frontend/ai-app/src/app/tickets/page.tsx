@@ -2,21 +2,23 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { createTicket, generateAISolution } from '../../utils/api';
-
+import toast from 'react-hot-toast';
 
 export interface Ticket {
-  id: number;
-  title: string;
-  description: string;
-  priority: string;
-}
+    id: number;
+    title: string;
+    description: string;
+    priority: string;
+    assigned_to: number | null;
+  }
 
-export interface AISolution {
-  id: number;
-  solution: string;
-  likes: number;
-  dislikes: number;
-}
+  interface AISolution {
+    id: number;
+    solution: string;
+    created_at: string;
+    likes: number;
+    dislikes: number;
+  }
 
 const Tickets: React.FC = () => {
   const [title, setTitle] = useState<string>('');
@@ -30,11 +32,18 @@ const Tickets: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const newTicket = await createTicket(title, description, priority);
-    setTicket(newTicket);
-    const solution = await generateAISolution(newTicket.id, 'system1');
-    setAiSolution(solution);
-    setIsLoading(false);
+    try {
+      const newTicket = await createTicket(title, description, priority);
+      setTicket(newTicket);
+      const solution = await generateAISolution(newTicket.id, selectedSystem);
+      setAiSolution(solution);
+      toast.success('Ticket created and AI solution generated successfully!');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
 
@@ -105,19 +114,20 @@ const Tickets: React.FC = () => {
       </motion.form>
 
       {ticket && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mt-8 bg-zinc-900 p-6 rounded-lg shadow-lg"
-        >
-          <h2 className="text-2xl font-bold mb-4">Ticket Created</h2>
-          <p><span className="font-semibold">Title:</span> {ticket.title}</p>
-          <p><span className="font-semibold">Description:</span> {ticket.description}</p>
-          <p><span className="font-semibold">Priority:</span> {ticket.priority}</p>
-          <p><span className="font-semibold">System:</span> {selectedSystem}</p>
-        </motion.div>
-      )}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+    className="mt-8 bg-zinc-900 p-6 rounded-lg shadow-lg"
+  >
+    <h2 className="text-2xl font-bold mb-4">Ticket Created</h2>
+    <p><span className="font-semibold">Title:</span> {ticket.title}</p>
+    <p><span className="font-semibold">Description:</span> {ticket.description}</p>
+    <p><span className="font-semibold">Priority:</span> {ticket.priority}</p>
+    <p><span className="font-semibold">System:</span> {selectedSystem}</p>
+    <p><span className="font-semibold">Assigned to:</span> {ticket.assigned_to ? 'You' : 'Unassigned'}</p>
+  </motion.div>
+)}
       {isLoading && (
         <motion.div
           initial={{ opacity: 0 }}
