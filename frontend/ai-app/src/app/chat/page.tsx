@@ -6,11 +6,7 @@ import { CornerGrid } from '@/components/CornerGrid';
 import ChatButton from '@/components/ChatButton';
 import { sendChatMessage } from '@/utils/api';
 import ProtectedRoute from '@/components/ProtectedRoute';
-
-interface Message {
-  text: string;
-  isUser: boolean;
-}
+import { Message } from '@/types/types';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -42,8 +38,6 @@ export default function ChatPage() {
 
   return (
     <ProtectedRoute>
-
-
     <div className="bg-zinc-950 min-h-screen py-20 text-zinc-200 selection:bg-zinc-600">
       <motion.div
         initial={{ opacity: 0, y: 25 }}
@@ -104,8 +98,8 @@ export default function ChatPage() {
           <ChatButton disabled={isLoading} />
         </form>
       </motion.div>
-      <CornerGrid />
-    </div>
+        <CornerGrid />
+      </div>
     </ProtectedRoute>
   );
 }

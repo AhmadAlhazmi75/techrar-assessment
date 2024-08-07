@@ -3,22 +3,18 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { createTicket, generateAISolution } from '../../utils/api';
 import toast from 'react-hot-toast';
+import { Ticket, AISolution } from '@/types/types';
 
-export interface Ticket {
-    id: number;
-    title: string;
-    description: string;
-    priority: string;
-    assigned_to: number | null;
-  }
+  const SYSTEMS = [
+    { value: 'system1', name: 'Do the work book' },
+    { value: 'system2', name: 'Django Rest Framework' },
+    { value: 'system3', name: 'System 3' },
+  ];
 
-  interface AISolution {
-    id: number;
-    solution: string;
-    created_at: string;
-    likes: number;
-    dislikes: number;
-  }
+  const getSystemName = (value: string) => {
+    const system = SYSTEMS.find((s) => s.value === value);
+    return system ? system.name : 'Unknown System';
+  };
 
 const Tickets: React.FC = () => {
   const [title, setTitle] = useState<string>('');
@@ -28,6 +24,7 @@ const Tickets: React.FC = () => {
   const [aiSolution, setAiSolution] = useState<AISolution | null>(null);
   const [selectedSystem, setSelectedSystem] = useState<string>('system1');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,9 +96,11 @@ const Tickets: React.FC = () => {
           className="w-full p-3 bg-zinc-800 text-zinc-200 rounded border border-zinc-700 focus:border-violet-500 focus:ring focus:ring-violet-500 focus:ring-opacity-50"
           whileFocus={{ scale: 1.02 }}
         >
-          <option value="system1">Do the work book</option>
-          <option value="system2">Django Rest Framework</option>
-          <option value="system3">System 3</option>
+        {SYSTEMS.map((system) => (
+          <option key={system.value} value={system.value}>
+            {system.name}
+          </option>
+        ))}
         </motion.select>
         <motion.button
           type="submit"
@@ -124,7 +123,7 @@ const Tickets: React.FC = () => {
     <p><span className="font-semibold">Title:</span> {ticket.title}</p>
     <p><span className="font-semibold">Description:</span> {ticket.description}</p>
     <p><span className="font-semibold">Priority:</span> {ticket.priority}</p>
-    <p><span className="font-semibold">System:</span> {selectedSystem}</p>
+    <p><span className="font-semibold">System:</span> {getSystemName(selectedSystem)}</p>
     <p><span className="font-semibold">Assigned to:</span> {ticket.assigned_to ? 'You' : 'Unassigned'}</p>
   </motion.div>
 )}

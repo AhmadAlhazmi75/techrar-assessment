@@ -4,29 +4,11 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
+import { TicketWithSolution } from '@/types/types';
 
-interface AISolution {
-    id: number;
-    solution: string;
-    created_at: string;
-    likes: number;
-    dislikes: number;
-  }
 
-interface Ticket {
-  id: number;
-  title: string;
-  description: string;
-  created_at: string;
-  updated_at: string;
-  priority: string;
-  status: string;
-  assigned_to: number | null;
-}
 
-interface TicketWithSolution extends Ticket {
-    ai_solution?: AISolution;
-  }
+
 
 export default function AllTickets() {
   const [tickets, setTickets] = useState<TicketWithSolution[]>([]);

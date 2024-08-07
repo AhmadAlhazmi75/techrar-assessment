@@ -4,6 +4,7 @@ const api = axios.create({
   baseURL: 'http://localhost:8000/api',
 });
 
+// set it to the request one time instead of doing it for every request
 export const setAuthToken = (token: string) => {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };

@@ -3,11 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../contexts/AuthContext';
-
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-  forAdmin?: boolean;
-}
+import { ProtectedRouteProps } from '@/types/types';
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, forAdmin = false }) => {
   const { user, loading } = useAuth();

@@ -10,6 +10,7 @@ import { InputField } from '../../components/InputField';
 import { Heading } from '../../components/Heading';
 import { CornerGrid } from '../../components/CornerGrid';
 import PublicRoute from '@/components/PublicRoute';
+
 const Register = () => {
   const [formData, setFormData] = useState({
     username: '',
