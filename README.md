@@ -14,8 +14,11 @@
 ## Architecture
 
 - Chat functionality architecture:
+
   ![crewai](./docs/crewai.png)
+
 - Ticketing System Architecture:
+
   ![Architecture](./docs/architecture.png)
 
 ## Tech Stack
