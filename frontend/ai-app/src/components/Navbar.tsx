@@ -25,6 +25,7 @@ const SimpleFloatingNav = () => {
 
       <NavLink href="/">Home</NavLink>
       <NavLink href="/chat">Chat</NavLink>
+      {user?.is_admin && <NavLink href="/tickets/all">All Tickets</NavLink>}
       {user ? (
         <>
           <NavLink href="/profile">Profile</NavLink>
@@ -43,7 +44,6 @@ const SimpleFloatingNav = () => {
 };
 
 const Logo = () => {
-  // Temp logo from https://logoipsum.com/
   return (
     <svg viewBox="0 0 24 24" data-name="025_SCIENCE" id="_025_SCIENCE" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
       <defs>

@@ -13,6 +13,12 @@ SYSTEM_PDF_MAP: Dict[str, Path] = {
     "system3": Path('media/system3_documentation.pdf'),
 }
 
+PDF_SEARCH_TOOLS = {
+    system: PDFSearchTool(pdf=str(path))
+    for system, path in SYSTEM_PDF_MAP.items()
+    if path.exists()
+}
+
 def create_crew(system: str, prompt: str) -> Crew:
     if system not in SYSTEM_PDF_MAP:
         raise ValueError(f"Invalid system: {system}")
@@ -46,6 +52,7 @@ def create_crew(system: str, prompt: str) -> Crew:
 
     return crew
 
+# this function is just to get answer from the crewai
 def process_prompt(system: str, prompt: str) -> str:
     try:
         crew = create_crew(system, prompt)
@@ -55,10 +62,5 @@ def process_prompt(system: str, prompt: str) -> str:
         print(f"Error processing prompt: {e}")
         return f"An error occurred while processing your request: {str(e)}"
 
-# Ensure the OPENAI_API_KEY is set
 if not os.getenv('OPENAI_API_KEY'):
     raise ValueError("OPENAI_API_KEY is not set in environment variables")
-
-# Print a startup message
-print("CrewAI setup initialized successfully.")
-print(f"Available systems: {', '.join(SYSTEM_PDF_MAP.keys())}")
