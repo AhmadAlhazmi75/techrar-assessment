@@ -24,7 +24,7 @@ const SimpleFloatingNav = () => {
       <Logo />
 
       <NavLink href="/">Home</NavLink>
-      <NavLink href="/chat">Chat</NavLink>
+      {user && <NavLink href="/chat">Chat</NavLink>}
       {user?.is_admin && <NavLink href="/tickets/all">Tickets</NavLink>}
       {user ? (
         <>
