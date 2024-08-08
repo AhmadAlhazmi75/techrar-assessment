@@ -34,6 +34,16 @@ class UserOutput(Schema):
 
 @router.post("/register", response=RegisterOutput)
 def register(request, data: RegisterInput):
+    """
+    Register a new user.
+
+    Args:
+        request: The HTTP request object.
+        data (RegisterInput): The input schema containing username, email, and password.
+
+    Returns:
+        RegisterOutput: The output schema containing the generated token.
+    """
     try:
         user = User.objects.create_user(username=data.username, email=data.email, password=data.password)
         token = Token.objects.create(user=user, key=secrets.token_hex(20))
@@ -49,6 +59,16 @@ def register(request, data: RegisterInput):
 
 @router.post("/login", response=LoginOutput)
 def login(request, data: LoginInput):
+    """
+    Log in an existing user.
+
+    Args:
+        request: The HTTP request object.
+        data (LoginInput): The input schema containing username and password.
+
+    Returns:
+        LoginOutput: The output schema containing the generated token.
+    """
     user = authenticate(username=data.username, password=data.password)
     if user is not None:
         token, _ = Token.objects.get_or_create(user=user)
@@ -60,11 +80,29 @@ def login(request, data: LoginInput):
 
 @router.post("/logout", auth=auth)
 def logout(request):
+    """
+    Log out the current user.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        dict: A dictionary containing a success message.
+    """
     Token.objects.filter(user=request.auth).delete()
     return {"detail": "Logged out successfully"}
 
 @router.get("/me", response=UserOutput, auth=auth)
 def me(request):
+    """
+    Retrieve the current user's information.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        UserOutput: The output schema containing the user's information.
+    """
     user = request.auth
     return UserOutput(
         id=user.id,

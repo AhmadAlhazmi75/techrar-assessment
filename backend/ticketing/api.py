@@ -12,6 +12,16 @@ auth = AuthBearer()
 
 @router.post("/tickets", response=TicketOut, auth=auth)
 def create_ticket(request, ticket_in: TicketIn):
+    """
+    Create a new ticket.
+
+    Args:
+        request: The HTTP request object.
+        ticket_in (TicketIn): The input schema for creating a ticket.
+
+    Returns:
+        TicketOut: The output schema representing the created ticket.
+    """
     ticket = Ticket.objects.create(
         title=ticket_in.title,
         description=ticket_in.description,
@@ -22,11 +32,32 @@ def create_ticket(request, ticket_in: TicketIn):
 
 @router.get("/tickets/{ticket_id}", response=TicketOut)
 def get_ticket(request, ticket_id: int):
+    """
+    Retrieve a ticket by its ID.
+
+    Args:
+        request: The HTTP request object.
+        ticket_id (int): The ID of the ticket to retrieve.
+
+    Returns:
+        TicketOut: The output schema representing the retrieved ticket.
+    """
     ticket = get_object_or_404(Ticket, id=ticket_id)
     return ticket
 
 @router.post("/tickets/{ticket_id}/ai-solution", response=AISolutionOut)
 def generate_ai_solution(request, ticket_id: int, system: str = "system1"):
+    """
+    Generate an AI solution for a ticket.
+
+    Args:
+        request: The HTTP request object.
+        ticket_id (int): The ID of the ticket for which to generate a solution.
+        system (str): The system to use for generating the solution (default is "system1").
+
+    Returns:
+        AISolutionOut: The output schema representing the generated AI solution.
+    """
     ticket = get_object_or_404(Ticket, id=ticket_id)
     prompt = f"Provide a solution for the following ticket: {ticket.description}"
 
@@ -39,11 +70,30 @@ def generate_ai_solution(request, ticket_id: int, system: str = "system1"):
 
 @router.get("/tickets", response=List[TicketOut])
 def get_all_tickets(request):
+    """
+    Retrieve all tickets.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        List[TicketOut]: A list of output schemas representing all tickets.
+    """
     tickets = Ticket.objects.all().select_related('ai_solution')
     return [TicketOut.from_orm(ticket) for ticket in tickets]
 
 @router.post("/ai-solutions/{solution_id}/like", auth=auth)
 def like_ai_solution(request, solution_id: int):
+    """
+    Like or unlike an AI solution.
+
+    Args:
+        request: The HTTP request object.
+        solution_id (int): The ID of the AI solution to like or unlike.
+
+    Returns:
+        dict: A dictionary containing the updated likes and dislikes count.
+    """
     if not request.auth.is_superuser:
         raise HttpError(403, "Only admins can like or dislike solutions")
     solution = get_object_or_404(AISolution, id=solution_id)
@@ -57,6 +107,16 @@ def like_ai_solution(request, solution_id: int):
 
 @router.post("/ai-solutions/{solution_id}/dislike", auth=auth)
 def dislike_ai_solution(request, solution_id: int):
+    """
+    Dislike or undislike an AI solution.
+
+    Args:
+        request: The HTTP request object.
+        solution_id (int): The ID of the AI solution to dislike or undislike.
+
+    Returns:
+        dict: A dictionary containing the updated likes and dislikes count.
+    """
     if not request.auth.is_superuser:
         raise HttpError(403, "Only admins can like or dislike solutions")
     solution = get_object_or_404(AISolution, id=solution_id)

@@ -5,18 +5,22 @@ from crewai import Agent, Task, Crew
 from crewai_tools import PDFSearchTool
 from openai import OpenAI
 
+# Initialize OpenAI client with API key from environment variables
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
+# Mapping of system names to their respective PDF documentation paths
 SYSTEM_PDF_MAP: Dict[str, Path] = {
     "system1": Path('media/system1_documentation.pdf'),
     "system2": Path('media/system2_documentation.pdf'),
 }
 
+# Mapping of system names to their respective filenames
 SYSTEM_FILENAME_MAP: Dict[str, str] = {
     "system1": "DO THE WORK BOOK",
     "system2": "DJANGO REST FRAMEWORK BOOK",
 }
 
+# Initialize PDF search tools for each system if the PDF file exists
 PDF_SEARCH_TOOLS = {
     system: PDFSearchTool(pdf=str(path))
     for system, path in SYSTEM_PDF_MAP.items()
@@ -24,6 +28,20 @@ PDF_SEARCH_TOOLS = {
 }
 
 def create_crew(system: str, prompt: str) -> Crew:
+    """
+    Create a Crew instance for analyzing system documentation.
+
+    Args:
+        system (str): The system name to analyze.
+        prompt (str): The prompt or question to analyze.
+
+    Returns:
+        Crew: The Crew instance configured for the specified system.
+
+    Raises:
+        ValueError: If the system is not valid.
+        FileNotFoundError: If the PDF file for the system does not exist.
+    """
     if system not in SYSTEM_PDF_MAP:
         raise ValueError(f"Invalid system: {system}")
 
@@ -56,8 +74,17 @@ def create_crew(system: str, prompt: str) -> Crew:
 
     return crew
 
-# this function is just to get answer from the crewai
 def process_prompt(system: str, prompt: str) -> str:
+    """
+    Process a prompt using the specified system's documentation.
+
+    Args:
+        system (str): The system name to use for processing the prompt.
+        prompt (str): The prompt or question to process.
+
+    Returns:
+        str: The result of processing the prompt.
+    """
     try:
         crew = create_crew(system, prompt)
         result = crew.kickoff()
@@ -66,5 +93,6 @@ def process_prompt(system: str, prompt: str) -> str:
         print(f"Error processing prompt: {e}")
         return f"An error occurred while processing your request: {str(e)}"
 
+# Ensure the OpenAI API key is set in environment variables
 if not os.getenv('OPENAI_API_KEY'):
     raise ValueError("OPENAI_API_KEY is not set in environment variables")

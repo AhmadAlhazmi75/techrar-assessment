@@ -5,6 +5,17 @@ router = Router()
 
 @router.post("/ask")
 def ask_question(request, system: str, prompt: str):
+    """
+    Endpoint to ask a question to the AI system.
+
+    Args:
+        request: The HTTP request object.
+        system (str): The system to use for generating the solution.
+        prompt (str): The prompt or question to ask the AI system.
+
+    Returns:
+        dict: A dictionary containing the result or an error message.
+    """
     if not system or not prompt:
         return {"error": "Both system and prompt are required"}
 
