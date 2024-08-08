@@ -232,6 +232,8 @@ git clone https://github.com/AhmadAlhazmi75/techrar-assessment
 cd techrar-assessment
 ```
 
+- Note that the requirements.txt file includes many libraries due to our use of the CrewAI platform, which has its dependencies. Apart from that, our main dependencies are simple and include Django, Django-Ninja, and a few others.
+
 ### Backend Setup
 ```bash
 cd backend
@@ -282,3 +284,8 @@ web: python manage.py migrate && gunicorn chatbot_gpt.wsgi
 4. Use git option in railway to connect to the backend repository.
 5. Select the repo, and add your environment variables.
 6. Railway will automatically containerize the project, and deploy it.
+
+
+## Demo 
+
+[Watch the demo video](https://www.youtube.com/watch?v=sWO7eoDrM4k)
