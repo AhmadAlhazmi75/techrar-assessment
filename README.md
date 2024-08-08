@@ -224,7 +224,7 @@ Comprehensive ticketing system with AI-powered solutions.
   }
   ```
 
-## Setup Instructions
+## Setup Instructions (Locally)
 
 ### Clone the Repository
 ```bash
@@ -255,6 +255,29 @@ npm install
 npm run dev
 ```
 
-## Running the Application
+## Setup Instructions (For Deployment)
 
-With both backend and frontend servers running, access the application through your web browser.
+-The whole system is deployed on Railway,
+to setup the system on Railway, you can follow the steps below:
+
+-First step is to Seperate the backend and frontend into two different git repositories
+
+- Frontend:
+
+1. Create a new Railway project
+2. Use git option in railway to connect to the frontend repository.
+3. Select the repo, and that's it!
+
+-Backend:
+
+1. Prepare the 'settings.py' file to be ready for deployment by adding your domain to the allowed hosts, and adding the domain to the CORS_ALLOWED_ORIGINS, you may also connect to the database service.
+2. On the root of the project, create a new file called 'Procfile' and add the following line to it:
+
+```bash
+web: python manage.py migrate && gunicorn chatbot_gpt.wsgi
+```
+
+3. On the same railway project, create a new service, from top right corner, click on "Create"
+4. Use git option in railway to connect to the backend repository.
+5. Select the repo, and add your environment variables.
+6. Railway will automatically containerize the project, and deploy it.
