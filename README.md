@@ -27,7 +27,7 @@
 - Django (Django-Ninja): REST API framework
 - OpenAI: Chat agent
 - CrewAI: Search PDF tool, task organization
-- SQLite: Data storage
+- SQLite (Postgresql in Production): Data storage
 - ChromaDB: Vector Database for CrewAI Search PDF tool
 - Django-Cors-Headers: CORS management
 - Python-Dotenv: Environment variable management
