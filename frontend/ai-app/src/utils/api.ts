@@ -1,38 +1,52 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
-});
+    baseURL: 'http://localhost:8000/api',
+    withCredentials: true,
+  });
 
-// set it to the request one time instead of doing it for every request
 export const setAuthToken = (token: string) => {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };
-
 
 export const clearAuthToken = () => {
   delete api.defaults.headers.common['Authorization'];
 };
 
+
 export const register = async (username: string, email: string, password: string) => {
-    const response = await api.post('/auth/register', { username, email, password });
+    try {
+      const response = await api.post('/auth/register', { username, email, password });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.detail || 'An error occurred during registration');
+      }
+      throw new Error('An unexpected error occurred');
+    }
+  };
+
+  export const login = async (username: string, password: string) => {
+    try {
+      const response = await api.post('/auth/login', { username, password });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(error.response.data.detail || 'An error occurred during login');
+      }
+      throw new Error('An unexpected error occurred');
+    }
+  };
+
+  export const logout = async () => {
+    const response = await api.post('/auth/logout');
     return response.data;
   };
 
-export const login = async (username: string, password: string) => {
-  const response = await api.post('/auth/login', { username, password });
-  return response.data;
-};
-
-export const logout = async () => {
-  const response = await api.post('/auth/logout');
-  return response.data;
-};
-
-export const getMe = async () => {
-  const response = await api.get('/auth/me');
-  return response.data;
-};
+  export const getMe = async () => {
+    const response = await api.get('/auth/me');
+    return response.data;
+  };
 
 export const sendChatMessage = async (system: string, prompt: string) => {
     const response = await api.post('/crewai/ask', null, {

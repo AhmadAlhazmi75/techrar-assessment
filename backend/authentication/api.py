@@ -1,11 +1,12 @@
 from ninja import Router, Schema
+from ninja.errors import HttpError
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from .models import Token
 from .auth import AuthBearer
 import secrets
+from django.db import IntegrityError
+
 
 auth = AuthBearer()
 router = Router()
@@ -34,25 +35,19 @@ class UserOutput(Schema):
 @router.post("/register", response=RegisterOutput)
 def register(request, data: RegisterInput):
     try:
-        validate_password(data.password)
-    except ValidationError as e:
-        return {"error": e.messages}
+        user = User.objects.create_user(username=data.username, email=data.email, password=data.password)
+        token = Token.objects.create(user=user, key=secrets.token_hex(20))
+        return {"token": token.key}
+    except IntegrityError as e:
+        if 'username' in str(e):
+            raise HttpError(400, "Username already exists")
+        elif 'email' in str(e):
+            raise HttpError(400, "Email already exists")
+        else:
+            raise HttpError(400, "Username or email already exists")
 
-    if User.objects.filter(username=data.username).exists():
-        return {"error": "Username already exists"}
 
-    if User.objects.filter(email=data.email).exists():
-        return {"error": "Email already exists"}
-
-    user = User.objects.create_user(
-        username=data.username,
-        email=data.email,
-        password=data.password
-    )
-    token = Token.objects.create(user=user, key=secrets.token_hex(20))
-    return {"token": token.key}
-
-@router.post("/login")
+@router.post("/login", response=LoginOutput)
 def login(request, data: LoginInput):
     user = authenticate(username=data.username, password=data.password)
     if user is not None:
@@ -61,12 +56,12 @@ def login(request, data: LoginInput):
             token.key = secrets.token_hex(20)
             token.save()
         return {"token": token.key}
-    return {"error": "Invalid credentials"}
+    raise HttpError(401, "Invalid credentials")
 
 @router.post("/logout", auth=auth)
 def logout(request):
     Token.objects.filter(user=request.auth).delete()
-    return {"message": "Logged out successfully"}
+    return {"detail": "Logged out successfully"}
 
 @router.get("/me", response=UserOutput, auth=auth)
 def me(request):
@@ -77,4 +72,3 @@ def me(request):
         email=user.email,
         is_admin=user.is_superuser
     )
-

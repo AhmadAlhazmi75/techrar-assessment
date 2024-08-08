@@ -1,3 +1,4 @@
+import React from 'react';
 export interface User {
     id: number;
     username: string;
@@ -43,9 +44,9 @@ export interface Message {
     ai_solution?: AISolution;
   }
 
-export interface AuthContextType {
+  export interface AuthContextType {
     user: User | null;
     loading: boolean;
-    login: (token: string) => Promise<void>;
+    login: (username: string, password: string) => Promise<void>;
     logout: () => void;
   }

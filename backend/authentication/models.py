@@ -6,4 +6,4 @@ class Token(models.Model):
     key = models.CharField(max_length=40, unique=True)
 
     def __str__(self):
-        return f"{self.user.username}'s token"
+            return self.key
