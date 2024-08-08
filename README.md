@@ -226,6 +226,8 @@ Comprehensive ticketing system with AI-powered solutions.
 
 ## Setup Instructions (Locally)
 
+You can try out the deployed version using the admin credentials: username `admin1` and password `1`. Alternatively, you can follow the provided setup instructions to run the application locally. Here's the link: [Deployed Version](https://techrar.ahmed-haz.com/).
+
 ### Clone the Repository
 ```bash
 git clone https://github.com/AhmadAlhazmi75/techrar-assessment
@@ -284,6 +286,14 @@ web: python manage.py migrate && gunicorn chatbot_gpt.wsgi
 4. Use git option in railway to connect to the backend repository.
 5. Select the repo, and add your environment variables.
 6. Railway will automatically containerize the project, and deploy it.
+
+## User Guide
+
+### Chatbot
+To use the chatbot, you'll need to be logged in, so create an account first. Once authenticated, navigate to `/chat` or find it in the navbar. The page includes four sections: a dropdown to select from available system documentations, a chat area for messages and AI responses, a suggestions area with example queries, and a textbox to send your messages.
+
+### Ticketing System
+To access the ticketing system, click the ticket icon at the bottom-right corner. After logging in, you can create a ticket by filling in the title, description, priority, and system choices. An AI-generated solution will appear, and the ticket is sent to an admin-only page where tickets can be liked or disliked by admins.
 
 
 ## Demo 
