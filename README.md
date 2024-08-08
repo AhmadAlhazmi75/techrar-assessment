@@ -1,5 +1,13 @@
 # Techrar Assessment Project
 
+
+<p align="center">
+  <img src="./docs/homepage.png" alt="Homepage" width="100%" />
+  <img src="./docs/chat.png" alt="Chat" width="100%" />
+</p>
+
+
+
 ## Table of Contents
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
@@ -267,7 +275,7 @@ to setup the system on Railway, you can follow the steps below:
 -First step is to Seperate the backend and frontend into two different git repositories
 
 - Frontend:
-  
+
 1. In api.ts, change the URL to your backend domain.
 2. Create a new Railway project.
 3. Use git option in railway to connect to the frontend repository.
@@ -296,6 +304,6 @@ To use the chatbot, you'll need to be logged in, so create an account first. Onc
 To access the ticketing system, click the ticket icon at the bottom-right corner. After logging in, you can create a ticket by filling in the title, description, priority, and system choices. An AI-generated solution will appear, and the ticket is sent to an admin-only page where tickets can be liked or disliked by admins.
 
 
-## Demo 
+## Demo
 
 [Watch the demo video](https://www.youtube.com/watch?v=sWO7eoDrM4k)
