@@ -10,7 +10,6 @@ import {CornerGrid} from '@/components/CornerGrid';
   const SYSTEMS = [
     { value: 'system1', name: 'Do the work book' },
     { value: 'system2', name: 'Django Rest Framework' },
-    { value: 'system3', name: 'System 3' },
   ];
 
   const getSystemName = (value: string) => {
