@@ -263,10 +263,11 @@ to setup the system on Railway, you can follow the steps below:
 -First step is to Seperate the backend and frontend into two different git repositories
 
 - Frontend:
-
-1. Create a new Railway project
-2. Use git option in railway to connect to the frontend repository.
-3. Select the repo, and that's it!
+  
+1. In api.ts, change the URL to your backend domain.
+2. Create a new Railway project.
+3. Use git option in railway to connect to the frontend repository.
+4. Select the repo, and that's it!.
 
 -Backend:
 
