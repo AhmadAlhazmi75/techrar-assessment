@@ -83,7 +83,6 @@ Comprehensive ticketing system with AI-powered solutions.
 - AI solution generation
 - Solution rating system (admin only)
 - User assignment
-- Flexible system selection for AI solutions
 
 ## API Documentation
 
@@ -161,7 +160,7 @@ Comprehensive ticketing system with AI-powered solutions.
 ### Ticketing System
 
 #### Create Ticket
-- **Endpoint**: `POST /tickets/tickets`
+- **Endpoint**: `POST /api/tickets/tickets`
 - **Headers**: `Authorization: Bearer your_auth_token_here`
 - **Request**:
   ```json
@@ -186,7 +185,7 @@ Comprehensive ticketing system with AI-powered solutions.
   ```
 
 #### Get Ticket
-- **Endpoint**: `GET /tickets/tickets/{ticket_id}`
+- **Endpoint**: `GET /api/tickets/tickets/{ticket_id}`
 - **Response**:
   ```json
   {
@@ -208,7 +207,7 @@ Comprehensive ticketing system with AI-powered solutions.
   ```
 
 #### Generate AI Solution
-- **Endpoint**: `POST /tickets/tickets/{ticket_id}/ai-solution`
+- **Endpoint**: `POST /api/tickets/tickets/{ticket_id}/ai-solution`
 - **Query Parameters**: `system=system1`
 - **Response**:
   ```json
@@ -223,7 +222,7 @@ Comprehensive ticketing system with AI-powered solutions.
   ```
 
 #### Like/Dislike AI Solution
-- **Endpoint**: `POST /tickets/ai-solutions/{solution_id}/like` or `/ai-solutions/{solution_id}/dislike`
+- **Endpoint**: `POST /api/tickets/ai-solutions/{solution_id}/like` or `/ai-solutions/{solution_id}/dislike`
 - **Headers**: `Authorization: Bearer your_auth_token_here` (Admin only)
 - **Response**:
   ```json
@@ -270,10 +269,10 @@ npm run dev
 
 ## Setup Instructions (For Deployment)
 
--The whole system is deployed on Railway,
+- The whole system is deployed on Railway,
 to setup the system on Railway, you can follow the steps below:
 
--First step is to Seperate the backend and frontend into two different git repositories
+- First step is to Seperate the backend and frontend into two different git repositories
 
 - Frontend:
 
