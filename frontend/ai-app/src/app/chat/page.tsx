@@ -11,13 +11,14 @@ import { Message } from '@/types/types';
 const QUESTIONS = {
     'system1': [
         'What is the name of the book, and who is the author?',
-        'How is DRF different from other frameworks?',
-        'Does this book cover authentication and authorization?',
+        'Does the ideas come linearly?',
+        'how can i deal with the ideas the are not coming linearly?',
+
     ],
     'system2': [
         'What is the name of the book, and who is the author?',
-        'Does the ideas come linearly?',
-        'how can i deal with the ideas the are not coming linearly?',
+        'How is DRF different from other frameworks?',
+        'Does this book cover authentication and authorization?',
     ]
 }
 
