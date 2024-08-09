@@ -42,6 +42,7 @@
 
 ### Frontend
 - NextJS: React framework
+- Typescript: Typed superset of JavaScript
 - TailwindCSS: CSS framework
 - Framer Motion: Animation library
 - Axios: HTTP client
